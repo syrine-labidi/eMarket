@@ -27,7 +27,7 @@ import com.sip.ams.repositories.ProviderRepository;
 @RequestMapping("/article/")
 
 public class ArticleController {
-	
+	//chemin de l'upload
 	public static String uploadDirectory = System.getProperty("user.dir")+"/src/main/resources/static/uploads";
 
 	private final ArticleRepository articleRepository;
@@ -58,8 +58,7 @@ public class ArticleController {
 	public String addArticle(@Valid Article article, BindingResult result,
 			@RequestParam(name = "providerId", required = false) Long p) {
 
-		Provider provider = providerRepository.findById(p)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid provider Id:" + p));
+		Provider provider = providerRepository.findById(p).orElseThrow(() -> new IllegalArgumentException("Invalid provider Id:" + p));
 		article.setProvider(provider);
 
 		articleRepository.save(article);
@@ -74,24 +73,28 @@ public class ArticleController {
 			 article.setProvider(provider);
 
 			 /// part upload
-
+			 
 			 StringBuilder fileName = new StringBuilder();
 			 MultipartFile file = files[0];
 			 Path fileNameAndPath = Paths.get(uploadDirectory ,file.getOriginalFilename());
 
+			 //filename contains nom fichier
 			 fileName.append(file.getOriginalFilename());
 			 try {
-			Files.write(fileNameAndPath, file.getBytes());
-			} catch (IOException e) {
-			e.printStackTrace();
-			}
+				Files.write(fileNameAndPath, file.getBytes());
+			     }
+			 catch (IOException e) 
+			 	{
+				e.printStackTrace();
+				}
 
-			article.setPicture(fileName.toString());
+			 article.setPicture(fileName.toString());
+			 
 			 articleRepository.save(article);
 			 return "redirect:list";
 
 			 //return article.getLabel() + " " +article.getPrice() + " " +
-			//p.toString();
+			 //p.toString();
 			 }
 
 	@GetMapping("delete/{id}")
