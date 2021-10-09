@@ -34,12 +34,16 @@ public class ProviderController {
 	@GetMapping("list")
 	// @ResponseBody
 	public String listProviders(Model model) {
-		
-		model.addAttribute("providers", providerRepository.findAll());
+		List<Provider> lp = (List <Provider>)providerRepository.findAll();
+		if( lp.size()== 0 ) {
+			lp = null;
+		}
+		model.addAttribute("providers", lp );
 		return "provider/listProviders";
 
 	}
-	
+
+	//recuperer les informations
 	@GetMapping("add")
 	 public String showAddProviderForm(Model model) {
 	 Provider provider = new Provider();// object dont la valeur des attributs par defaut
@@ -47,8 +51,9 @@ public class ProviderController {
 	 return "provider/addProvider";
 	 }
 
+	//poster les informations
 	@PostMapping("add")
-	 public String addProvider(@Valid Provider provider, BindingResult result, Model model) {
+	 public String addProvider(@Valid Provider provider, BindingResult result) {
 	 if (result.hasErrors()) {
 	 return "provider/addProvider";
 	 }
@@ -57,9 +62,9 @@ public class ProviderController {
 	 }
 	
 	
-	@GetMapping("delete/{id}")
+	@GetMapping("delete/{id}")//ce id est le pathvariable 
 	 public String deleteProvider(@PathVariable("id") long id, Model model) {
-
+															//si on n a pas trouvé l'id on lance une exception	
 		Provider provider = providerRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Invalid provider Id:" + id));
 		System.out.println("suite du programme...");
 		providerRepository.delete(provider);

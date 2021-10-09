@@ -100,7 +100,8 @@ public class ArticleController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid provider Id:" + id));
 		articleRepository.delete(artice);
 		model.addAttribute("articles", articleRepository.findAll());
-		return "article/listArticles";
+		//return "article/listArticles";
+		return "redirect:../list";
 	}
 
 	@GetMapping("edit/{id}")
